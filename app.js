@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 app.use(errors());
 app.use(errorHandler);
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3010 } = process.env;
 
 mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
 
