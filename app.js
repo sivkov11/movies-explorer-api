@@ -6,7 +6,6 @@ const { errors } = require('celebrate');
 const router = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const NotFoundError = require('./errors/not-found-error');
 
 const app = express();
 
@@ -14,20 +13,16 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use(requestLogger);
-app.use(errorLogger);
-
 app.use(router);
 
-app.use((req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
+app.use(requestLogger);
+app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);
 
-const { PORT = 3010 } = process.env;
+const { PORT = 3010, DB_HOST = 'mongodb://127.0.0.1:27017/bitfilmsdb' } = process.env;
 
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
+mongoose.connect(DB_HOST);
 
 app.listen(PORT);

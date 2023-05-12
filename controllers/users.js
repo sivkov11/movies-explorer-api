@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ConflictError = require('../errors/conflict-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
-const UnauthorizedError = require('../errors/unauthorized-error');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -44,7 +43,6 @@ module.exports.login = (req, res, next) => {
           { expiresIn: '7d' },
         ),
       });
-      return next(new UnauthorizedError('Необходима авторизация'));
     })
     .catch(next);
 };
@@ -70,6 +68,8 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InaccurateDataError('Некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
       } else {
         next(err);
       }

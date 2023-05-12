@@ -42,7 +42,7 @@ module.exports.createMovie = (req, res, next) => {
     .then((newMovie) => res.send(newMovie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new InaccurateDataError());
+        next(new InaccurateDataError('Некорректные данные'));
       } else {
         next(err);
       }
@@ -50,16 +50,16 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { objectId } = req.params;
+  const { id: objectId } = req.params;
 
   Movie.findById(objectId)
     .then((movie) => {
-      if (movie === null) {
-        throw new NotFoundError();
+      if (!movie) {
+        throw new NotFoundError('Фильм не найден');
       }
 
       if (movie.owner.toString() !== req.user._id) {
-        throw new ForbiddenError();
+        throw new ForbiddenError('Доступ ограничен');
       }
 
       return movie;
@@ -69,7 +69,7 @@ module.exports.deleteMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new InaccurateDataError());
+        next(new InaccurateDataError('Некорректный запрос'));
         return;
       }
 
