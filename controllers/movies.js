@@ -50,7 +50,7 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { id: objectId } = req.params;
+  const { objectId } = req.params;
 
   Movie.findById(objectId)
     .then((movie) => {
@@ -65,7 +65,10 @@ module.exports.deleteMovie = (req, res, next) => {
       return movie;
     })
     .then((movie) => {
-      Movie.deleteOne(movie);
+      Movie.deleteOne(movie)
+        .then(() => {
+          res.send({ message: 'Удалено' });
+        });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
