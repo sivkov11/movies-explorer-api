@@ -13,9 +13,10 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use(requestLogger);
+
 app.use(router);
 
-app.use(requestLogger);
 app.use(errorLogger);
 
 app.use(errors());

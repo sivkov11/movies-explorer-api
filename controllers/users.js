@@ -16,9 +16,11 @@ module.exports.createUser = (req, res, next) => {
       name,
     }))
     .then((user) => res.send({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      token: jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      ),
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
