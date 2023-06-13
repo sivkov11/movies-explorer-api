@@ -66,7 +66,7 @@ module.exports.updateUser = (req, res, next) => {
     { name, email },
     { new: true, runValidators: true },
   )
-    .then((user) => res.send({user}))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InaccurateDataError('Некорректные данные'));
